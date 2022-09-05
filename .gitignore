@@ -1,6 +1,6 @@
 .vscode
 __pycache__
-venv
+env
 
 # OS generated files #
 ######################
@@ -13,3 +13,5 @@ ehthumbs.db
 Thumbs.db
 
 .github/**
+
+node_modules/**
