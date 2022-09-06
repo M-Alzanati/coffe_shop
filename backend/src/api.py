@@ -80,7 +80,7 @@ def patch_drinks(payload, id):
         
         return jsonify({
             'success': True,
-            'drinks': drink.long()
+            'drinks': [drink.long()]
         })
     except:
         print(sys.exc_info())
@@ -107,30 +107,6 @@ def delete_drinks(payload, id):
 
 # Error Handling
 
-@app.errorhandler(400)
-def unprocessable(error):
-    return jsonify({
-        "success": False,
-        "error": 400,
-        "message": "Bad Request"
-    }), 400
-
-@app.errorhandler(401)
-def unprocessable(error):
-    return jsonify({
-        "success": False,
-        "error": 401,
-        "message": "Unauthorized"
-    }), 401
-
-@app.errorhandler(403)
-def unprocessable(error):
-    return jsonify({
-        "success": False,
-        "error": 403,
-        "message": "Forbidden"
-    }), 403
-
 @app.errorhandler(404)
 def unprocessable(error):
     return jsonify({
@@ -146,3 +122,9 @@ def unprocessable(error):
         "error": 422,
         "message": "Unprocessable Entity"
     }), 422
+
+@app.errorhandler(AuthError)
+def handle_auth_error(ex):
+    response = jsonify(ex.error)
+    response.status_code = ex.status_code
+    return response

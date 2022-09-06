@@ -22,7 +22,6 @@ class AuthError(Exception):
         self.error = error
         self.status_code = status_code
 
-
 # Auth Header
 
 def get_token_auth_header():
@@ -32,20 +31,20 @@ def get_token_auth_header():
             'code': 'authorization_header_missing',
             'description': 'Authorization header is expected.'
         }, 401)
-    
+
     auth_parts = auth.split()
-    if auth_parts[0].lower() != 'bearer' :
+    if auth_parts[0].lower() != 'bearer':
         raise AuthError({
             'code': 'invalid_header',
             'description': 'Authorization header must start with "Bearer".'
-        }, 401)        
-    
+        }, 401)
+
     if len(auth_parts) == 1:
         raise AuthError({
             'code': 'invalid_header',
             'description': 'No token found.'
-        }, 401)    
-   
+        }, 401)
+
     if len(auth_parts) > 2:
         raise AuthError({
             'code': 'invalid_header',
@@ -54,27 +53,29 @@ def get_token_auth_header():
 
     return auth_parts[1]
 
+
 def check_permissions(permission, payload):
     if 'permissions' not in payload:
-                        raise AuthError({
-                            'code': 'invalid_claims',
-                            'description': 'Permissions not included in JWT.'
-                        }, 400)
+        raise AuthError({
+            'code': 'invalid_claims',
+            'description': 'Permissions not included in JWT.'
+        }, 400)
 
     if permission not in payload['permissions']:
         raise AuthError({
             'code': 'unauthorized',
             'description': 'Permission not found.'
         }, 403)
-        
+
     return True
+
 
 def verify_decode_jwt(token):
     jwksUrl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     jwks = json.loads(jwksUrl.read())
     unverified_headers = jwt.get_unverified_header(token)
     rsa_key = {}
-    
+
     if 'kid' not in unverified_headers:
         raise AuthError({
             'code': 'invalid_header',
@@ -120,9 +121,10 @@ def verify_decode_jwt(token):
             }, 400)
 
     raise AuthError({
-                'code': 'invalid_header',
+        'code': 'invalid_header',
                 'description': 'Unable to find the appropriate key.'
-            }, 400)    
+    }, 403)
+
 
 def requires_auth(permission=''):
     def requires_auth_decorator(f):
