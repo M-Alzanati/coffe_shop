@@ -3,11 +3,12 @@ from flask import request, _request_ctx_stack
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
+from settings import ALGORITHMS, API_AUDIENCE, AUTH0_DOMAIN
 
 
-AUTH0_DOMAIN = 'dev-spcp9jdr.us.auth0.com'
-ALGORITHMS = ['RS256']
-API_AUDIENCE = 'coffee_shop_id'
+AUTH0_DOMAIN = AUTH0_DOMAIN
+ALGORITHMS = ALGORITHMS
+API_AUDIENCE = API_AUDIENCE
 
 # AuthError Exception
 '''
@@ -65,6 +66,7 @@ def check_permissions(permission, payload):
             'code': 'unauthorized',
             'description': 'Permission not found.'
         }, 403)
+        
     return True
 
 def verify_decode_jwt(token):
